@@ -1,5 +1,4 @@
 
-import jwt from 'jsonwebtoken'
 import {User} from '../../../database/models/user.model.js'
 import bcrypt from 'bcrypt'
 import { catchError } from '../../middleware/catchError.js';
@@ -12,9 +11,9 @@ const addUser = catchError(async (req: Request, res: Response) => {
     const userExists = await User.findOne({ email: req.body.email });
     if (userExists) return res.status(400).json({ message: "user already exists" });
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const newUser = new User({ ...req.body, password: hashedPassword });
-    await newUser.save();
-    res.status(201).json({ message: "success",newUser });
+    const user = new User({ ...req.body, password: hashedPassword });
+    await user.save();
+    res.status(201).json({ message: "success",user });
 });
 
 // get all users

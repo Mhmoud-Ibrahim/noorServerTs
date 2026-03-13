@@ -7,7 +7,9 @@ export interface IProduct extends Document {
     images: string[]; 
     category:mongoose.Types.ObjectId
     price: number;
-    slug:string
+    stock: number;
+    slug:string,
+    costPrice: number;
     fullImageCoverUrl?: string;
     fullImagesUrls?: string[];
 }
@@ -22,6 +24,16 @@ const ProductSchema = new Schema<IProduct>({
         type:String,
         lowercase:true,
         required:true
+    },
+    stock: {
+        type: Number,
+        required: true,
+        min: 0
+    },
+    costPrice: {
+        type: Number,
+        required: true,
+        min: 0
     },
     description: {
         type: String,

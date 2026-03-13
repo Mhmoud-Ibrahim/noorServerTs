@@ -8,7 +8,7 @@ const userRouter =Router()
 userRouter
 .post('/user',authenticate,allowedTo('admin'),addUser)
 .get('/user',authenticate,allowedTo('admin'),getAllUsers)
-.post('/user/:id',authenticate,allowedTo('admin'),getOneUser)
+.get('/user/:id',authenticate,allowedTo('admin'),getOneUser)
 .delete('/user/:id',authenticate,allowedTo('admin'),deleteUser)
 .put('/user/:id', uploadSingleFile('userImage', 'user'),authenticate,allowedTo('admin'),updateuser)
 .post('/changePassword/:id',authenticate,changePassowrd)

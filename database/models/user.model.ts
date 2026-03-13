@@ -3,9 +3,9 @@ export interface IUser extends Document {
     name: string;
     email: string;
     password: string;
-    userImage: string;
+    userImage?: string;
     fullUserImage?: string;
-    role: string; // حقل اختياري للرابط الكامل
+    role: string; 
 }
 
 const Schema = new mongoose.Schema<IUser>({
@@ -15,7 +15,7 @@ const Schema = new mongoose.Schema<IUser>({
     userImage: { type: String, default: null },
     role: { 
         type: String, 
-        enum: ['user', 'admin'], // مسموح فقط بهاتين القيمتين
+        enum: ['user', 'admin','employee'], // مسموح فقط بهاتين القيمتين
         default: 'user' // أي مستخدم جديد سيكون user تلقائياً
     }
 }, {
