@@ -1,0 +1,67 @@
+
+import jwt from 'jsonwebtoken'
+import {User} from '../../../database/models/user.model.js'
+import bcrypt from 'bcrypt'
+import { catchError } from '../../middleware/catchError.js';
+import { AppError } from '../../utils/appError.js';
+import type { NextFunction, Request, Response } from 'express';
+
+//signup
+const signup = catchError(async (req: Request, res: Response) => {
+    const userExists = await User.findOne({ email: req.body.email });
+    if (userExists) return res.status(400).json({ message: "user already exists" });
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const newUser = new User({ ...req.body, password: hashedPassword });
+    await newUser.save();
+    res.status(201).json({ message: "success" });
+});
+
+
+//signin
+const signin = catchError(async (req:Request, res:Response, next:NextFunction) => {
+    const { email, password } = req.body
+    const user = await User.findOne({ email })
+    if (!user) return next(new AppError('user not found', 401))
+    const isPasswordCorrect =await bcrypt.compare(password,user.password);
+    if (isPasswordCorrect) {
+        let token = jwt.sign({userId: user._id, email: user.email, name: user.name, role: user.role }, process.env.JWT_KEY as string)
+        res.cookie('noorToken', token, {
+            httpOnly: true,   
+            secure:true,     
+            sameSite: 'none', 
+            maxAge: 24 * 60 * 60 * 1000  ,   
+        })
+        return res.status(200).json({ message: "success" });
+    }
+    return next(new AppError('incorrect email or password ', 401))
+})
+const logout = catchError((req:Request, res:any) => {
+    res.clearCookie('noorToken', {
+        httpOnly: true,
+        secure:true,
+        sameSite: 'none',
+        path: '/' 
+    });
+    return res.json({ message: 'Logged out successfully' })
+})
+
+const getMe = catchError(async (req: any, res: Response, next: NextFunction) => {
+    const token = req.cookies?.noorToken;
+    if (!token) {
+        return next(new AppError("No token found, please login", 401));
+    }
+    res.status(200).json({
+        status: "success",
+        data: req.user, 
+        token
+    });
+});
+
+
+
+export {
+    signup,
+    signin,
+    logout,
+    getMe
+}
