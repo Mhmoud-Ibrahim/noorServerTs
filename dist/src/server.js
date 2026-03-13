@@ -1,0 +1,38 @@
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import { AppError } from './utils/appError.js';
+import globalErrorHandler from './middleware/globalError.js';
+import cors from 'cors';
+import { dbConnections } from '../database/dbConnections.js';
+import productRouter from './modules/products/product.routes.js';
+import categoryRouter from './modules/categories/category.routes.js';
+import authRouter from './modules/auth/auth.routes.js';
+import userRouter from './modules/user/user.routes.js';
+import orderRouter from './modules/order/order.routes.js';
+import dashboardRouter from './modules/dashboard/dashboard.routes.js';
+import expenseRouter from './modules/expenses/expenses.routes.js';
+import dotenv from 'dotenv';
+dotenv.config();
+dbConnections();
+const app = express();
+app.use(cookieParser());
+app.use(express.json());
+app.use(cors({
+    origin: "*",
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.use('/uploads', express.static('uploads'));
+app.use('/auth', authRouter);
+app.use('/api', userRouter, productRouter, categoryRouter, orderRouter, expenseRouter, dashboardRouter);
+app.get('/', (req, res) => res.send('OK api is running'));
+app.all(/(.*)/, (req, res, next) => {
+    next(new AppError(`Route ${req.originalUrl} Not Found`, 404));
+});
+app.use(globalErrorHandler);
+const port = process.env.PORT || 8000;
+app.listen(port, () => {
+    console.log(` Server running on http://localhost:${port}`);
+});
+//# sourceMappingURL=server.js.map

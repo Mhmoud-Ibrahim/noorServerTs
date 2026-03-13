@@ -3,7 +3,7 @@ export interface IUser extends Document {
     name: string;
     email: string;
     password: string;
-    userImage: string;
+    userImage?: string;
     fullUserImage?: string;
     role: string;
 }
@@ -63,7 +63,7 @@ export declare const User: mongoose.Model<IUser, {}, {}, {
     }, "id"> & {
         id: string;
     }>;
-    userImage?: mongoose.SchemaDefinitionProperty<string, IUser, mongoose.Document<unknown, {}, IUser, {
+    userImage?: mongoose.SchemaDefinitionProperty<string | undefined, IUser, mongoose.Document<unknown, {}, IUser, {
         id: string;
     }, mongoose.DefaultSchemaOptions> & Omit<IUser & {
         _id: mongoose.Types.ObjectId;

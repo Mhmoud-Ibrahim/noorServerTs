@@ -6,7 +6,7 @@ const Schema = new mongoose.Schema({
     userImage: { type: String, default: null },
     role: {
         type: String,
-        enum: ['user', 'admin'], // مسموح فقط بهاتين القيمتين
+        enum: ['user', 'admin', 'employee'], // مسموح فقط بهاتين القيمتين
         default: 'user' // أي مستخدم جديد سيكون user تلقائياً
     }
 }, {
