@@ -5,15 +5,15 @@ import type { Request } from 'express';
 import fs from 'fs';
 export const fileUpload = (folderName: string) => {
 
-    const path = `uploads/${folderName}`;
+   
     
     // إنشاء المجلد إذا لم يكن موجوداً لمنع خطأ 500
-    if (!fs.existsSync(path)) {
-        fs.mkdirSync(path, { recursive: true });
-    }
+    // if (!fs.existsSync(path)) {
+    //     fs.mkdirSync(path, { recursive: true });
+    // }
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
-            cb(null, path)
+            cb(null, `uploads/${folderName}`)
         },
         filename: (req, file, cb) => {
             cb(null, uuidv4() + "-" + file.originalname)
