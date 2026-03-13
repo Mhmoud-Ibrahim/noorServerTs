@@ -16,7 +16,8 @@ import userRouter from './modules/user/user.routes.js';
 import orderRouter from './modules/order/order.routes.js';
 import dashboardRouter from './modules/dashboard/dashboard.routes.js';
 import expenseRouter from './modules/expenses/expenses.routes.js';
-
+import dotenv from 'dotenv';
+dotenv.config();
 
 dbConnections();
 const app: Application = express();
@@ -46,12 +47,12 @@ app.use('/api', userRouter,
 
 
 
-app.get('/', (req, res) => res.send('OK'));
+app.get('/', (req, res) => res.send('OK api is running'));
 app.all(/(.*)/, (req: Request, res: Response, next: NextFunction) => {
   next(new AppError(`Route ${req.originalUrl} Not Found`, 404))
 })
 app.use(globalErrorHandler)
-const port =process.env.PORT || 3000;
+const port =process.env.PORT ||8000;
 
 app.listen(port, () => {
   console.log(` Server running on http://localhost:${port}`);

@@ -9,6 +9,9 @@
     "build": "tsc",
     "start": "node dist/server.js"
   },
+  "engines": {
+    "node": "22.21.1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Mhmoud-Ibrahim/noorServerTs.git"
