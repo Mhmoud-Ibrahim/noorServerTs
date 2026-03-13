@@ -10,7 +10,7 @@
     "start": "node dist/server.js"
   },
   "engines": {
-    "node": "22.21.1"
+    "node": "24.x"
   },
   "repository": {
     "type": "git",
