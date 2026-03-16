@@ -26,6 +26,6 @@ const CategorySchema = new Schema<ICategory>({
 });
 
 CategorySchema.virtual('fullImageUrl').get(function (this: ICategory) {
-    return this.imageCover ? `http://localhost:5000/${this.imageCover}` : null;
+    return this.imageCover ? `https://noor-server-ts.vercel.app/uploads/categories/${this.imageCover}` : null;
 });
 export const CategoryModel = mongoose.model<ICategory>('Categories', CategorySchema);

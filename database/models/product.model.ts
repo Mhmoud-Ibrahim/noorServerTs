@@ -60,12 +60,12 @@ const ProductSchema = new Schema<IProduct>({
 
 // Virtual للصورة الأساسية
 ProductSchema.virtual('fullImageCoverUrl').get(function (this: IProduct) {
-    return this.imageCover ? `http://localhost:5000/${this.imageCover}` : null;
+    return this.imageCover ? `https://noor-server-ts.vercel.app/uploads/products/${this.imageCover}` : null;
 });
 
 // Virtual لمصفوفة الصور
 ProductSchema.virtual('fullImagesUrls').get(function (this: IProduct) {
-    return this.images ? this.images.map(image => `http://localhost:5000/${image}`) : [];
+    return this.images ? this.images.map(image => `https://noor-server-ts.vercel.app/uploads/products/${image}`) : [];
 });
 
 // التصدير باستخدام ESM

@@ -41,7 +41,7 @@ const ExpenseSchema = new Schema<IExpense>({
 
 // Virtual لرابط صورة الفاتورة
 ExpenseSchema.virtual('fullInvoiceImageUrl').get(function (this: IExpense) {
-    return this.invoiceImage ? `http://localhost:5000/uploads/expenses/${this.invoiceImage}` : null;
+    return this.invoiceImage ? `https://noor-server-ts.vercel.app/uploads/expenses/${this.invoiceImage}` : null;
 });
 
 export const ExpenseModel = mongoose.model<IExpense>('Expenses', ExpenseSchema);
