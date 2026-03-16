@@ -25,14 +25,14 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use(cors({
-  origin:["http://localhost:3000",
-    "https://noor-server-ts.vercel.app"
+  origin:["http://localhost:3000"
   ] ,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true, 
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 
 app.use('/uploads', express.static('uploads'));
