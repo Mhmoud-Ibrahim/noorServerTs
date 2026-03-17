@@ -25,11 +25,10 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use(cors({
-  origin:"http://localhost:3000"
-  ,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: ["http://localhost:3000", "https://your-frontend-domain.vercel.app"], // أضف دومين الفرونت الخاص بك هنا
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true, 
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'] 
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
