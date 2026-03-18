@@ -26,7 +26,6 @@ app.use(cors({
   credentials: true, 
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'] 
 }));
-app.options('*', cors());
 dbConnections();
 app.use(cookieParser());
 app.use(express.json());
