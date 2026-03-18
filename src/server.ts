@@ -90,7 +90,7 @@ app.use(cors({
 // 2. هيدر إضافي لضمان السماح بالـ Credentials في كل الردود
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  if (origin && ["http://localhost:3000", "http://172.20.10.5:3000"].includes(origin)) {
+  if (origin && "http://localhost:3000".includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
   }
   res.header('Access-Control-Allow-Credentials', 'true');
