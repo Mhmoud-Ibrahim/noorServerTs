@@ -19,17 +19,18 @@ import expenseRouter from './modules/expenses/expenses.routes.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-dbConnections();
 const app: Application = express();
-app.use(cookieParser());
-app.use(express.json());
-
 app.use(cors({
   origin: ["http://localhost:3000", "http://172.20.10.5:3000"], // أضف دومين الفرونت الخاص بك هنا
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true, 
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'] 
 }));
+app.options('*', cors());
+dbConnections();
+app.use(cookieParser());
+app.use(express.json());
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
