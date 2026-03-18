@@ -21,7 +21,7 @@ dotenv.config();
 
 const app: Application = express();
 app.use(cors({
-  origin: ["http://localhost:3000", "http://172.20.10.5:3000"], // أضف دومين الفرونت الخاص بك هنا
+  origin: ["http://localhost:3000", "http://172.20.10.5:3000"],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true, 
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'] 
