@@ -20,42 +20,12 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app: Application = express();
-// app.use(cors({
-//   origin:"http://localhost:3000",
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//   credentials: true, 
-//   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-// }));
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Origin', req.headers.origin);
-  res.header('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization'
-  );
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
-  next();
-});
-
-const allowedOrigins = ['http://localhost:3000', 'https://your-frontend-domain.vercel.app'];
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin:"http://localhost:3000",
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true, 
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  optionsSuccessStatus: 200 
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
-
 dbConnections();
 app.use(cookieParser());
 
