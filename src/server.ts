@@ -20,12 +20,27 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app: Application = express();
+// app.use(cors({
+//   origin:"http://localhost:3000",
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//   credentials: true, 
+//   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+// }));
+const allowedOrigins = ['http://localhost:3000', 'https://your-frontend-domain.vercel.app'];
 app.use(cors({
-  origin:"http://localhost:3000",
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true, 
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  optionsSuccessStatus: 200 
 }));
+
 dbConnections();
 app.use(cookieParser());
 
