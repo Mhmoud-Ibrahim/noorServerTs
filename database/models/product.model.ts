@@ -1,11 +1,12 @@
 import mongoose, { Schema, Document } from "mongoose";
+import type { ICategory } from "./category.model.js";
 
 export interface IProduct extends Document {
     title: string;
     description: string;
     imageCover: string;
     images: string[]; 
-    category:mongoose.Types.ObjectId
+    category: mongoose.Types.ObjectId | ICategory; 
     price: number;
     stock: number;
     slug:string,
@@ -40,10 +41,11 @@ const ProductSchema = new Schema<IProduct>({
         minLength: [10, 'too short description'],
         maxLength: [1000, 'too long description']
     },
-     category:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'Categories',
-   },
+    category: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Categories', 
+        required: true
+    },
     imageCover: String,
     images: [String], 
     price: {
