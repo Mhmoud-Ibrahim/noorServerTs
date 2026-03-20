@@ -8,24 +8,58 @@ import slugify from "slugify";
 
 
 
-//add product
+// //add product
+// const addProduct = catchError(async (req: Request, res: Response, next: NextFunction) => {
+//     const { title,slug, description, imageCover, images, price } = req.body;
+//     if (req.body.title) req.body.slug = slugify.default(req.body.title, { lower: true });
+//     const files = req.files as any;
+//     if (files) {
+//         if (files.imageCover && files.imageCover[0]) {
+//             req.body.imageCover = files.imageCover[0].filename;
+//         }
+//         if (files.images) {
+//             req.body.images = files.images.map((img: any) => img.filename);
+//         }
+//     }
+//     const isExist = await ProductModel.findOne({ title });
+//     if (isExist) return next(new AppError("المنتج موجود مسبقاً", 400));
+//     const newProduct = await ProductModel.create({ ...req.body });
+//     res.status(201).json({ message: "success", product: newProduct });
+// });
 const addProduct = catchError(async (req: Request, res: Response, next: NextFunction) => {
-    const { title,slug, description, imageCover, images, price } = req.body;
-    if (req.body.title) req.body.slug = slugify.default(req.body.title, { lower: true });
+    const { title } = req.body;
+    
+    // 1. توليد الـ slug
+    if (title) {
+        req.body.slug = slugify.default(title, { lower: true });
+    }
+
+    // 2. التعامل مع الملفات المرفوعة (Cloudinary تعيد الروابط في حقل path)
     const files = req.files as any;
     if (files) {
+        // الصورة الغلاف
         if (files.imageCover && files.imageCover[0]) {
-            req.body.imageCover = files.imageCover[0].filename;
+            // نستخدم path لأنه يحتوي على رابط الصورة الكامل (https://...)
+            req.body.imageCover = files.imageCover[0].path; 
         }
+        
+        // مصفوفة الصور الإضافية
         if (files.images) {
-            req.body.images = files.images.map((img: any) => img.filename);
+            // نستخدم map لاستخراج الروابط الكاملة لكل الصور
+            req.body.images = files.images.map((img: any) => img.path);
         }
     }
+
+    // 3. التحقق من وجود المنتج
     const isExist = await ProductModel.findOne({ title });
     if (isExist) return next(new AppError("المنتج موجود مسبقاً", 400));
-    const newProduct = await ProductModel.create({ ...req.body });
+
+    // 4. إنشاء المنتج بالبيانات الجديدة (التي تحتوي على روابط الصور)
+    const newProduct = await ProductModel.create(req.body);
+
     res.status(201).json({ message: "success", product: newProduct });
 });
+
 // get all products
 const getAllProducts = catchError(async (req: Request, res: Response, next: NextFunction) => {
     const apiFeatures = new ApiFeatures(ProductModel.find().populate('category'), req.query)
