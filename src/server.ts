@@ -35,13 +35,12 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 app.use('/uploads', express.static('uploads'));
 app.use('/auth', authRouter);
-app.use('/api', userRouter,
-  productRouter,
-  categoryRouter,
-  orderRouter,
-  expenseRouter,
-  dashboardRouter);
-
+app.use('/api', userRouter);
+app.use('/api',productRouter)
+app.use('/api',categoryRouter)
+app.use('/api',orderRouter)
+app.use('/api',dashboardRouter)
+app.use('/api',expenseRouter)
 
 
 
