@@ -21,7 +21,7 @@ dotenv.config();
 
 const app: Application = express();
 app.use(cors({
-  origin:["http://localhost:3000"],
+  origin:["http://localhost:3000","https://api.cloudinary.com/"],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true, 
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
