@@ -78,8 +78,8 @@ import type { ICategory } from "./category.model.js";
 export interface IProduct extends Document {
     title: string;
     description: string;
-    imageCover: string; // سيحتوي على رابط Cloudinary الكامل
-    images: string[];   // مصفوفة روابط Cloudinary الكاملة
+    imageCover: string; 
+    images: string[];  
     category: mongoose.Types.ObjectId | ICategory; 
     price: number;
     stock: number;

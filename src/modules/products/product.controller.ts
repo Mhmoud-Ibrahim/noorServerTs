@@ -9,32 +9,13 @@ import slugify from "slugify";
 
 
 // //add product
-// const addProduct = catchError(async (req: Request, res: Response, next: NextFunction) => {
-//     const { title,slug, description, imageCover, images, price } = req.body;
-//     if (req.body.title) req.body.slug = slugify.default(req.body.title, { lower: true });
-//     const files = req.files as any;
-//     if (files) {
-//         if (files.imageCover && files.imageCover[0]) {
-//             req.body.imageCover = files.imageCover[0].filename;
-//         }
-//         if (files.images) {
-//             req.body.images = files.images.map((img: any) => img.filename);
-//         }
-//     }
-//     const isExist = await ProductModel.findOne({ title });
-//     if (isExist) return next(new AppError("المنتج موجود مسبقاً", 400));
-//     const newProduct = await ProductModel.create({ ...req.body });
-//     res.status(201).json({ message: "success", product: newProduct });
-// });
 const addProduct = catchError(async (req: Request, res: Response, next: NextFunction) => {
-    const { title } = req.body;
-    if (title) {
-        req.body.slug = slugify.default(title, { lower: true });
-    }
+    const { title,slug, description, imageCover, images, price } = req.body;
+    if (req.body.title) req.body.slug = slugify.default(req.body.title, { lower: true });
     const files = req.files as any;
     if (files) {
         if (files.imageCover && files.imageCover[0]) {
-            req.body.imageCover = files.imageCover[0].path; 
+            req.body.imageCover = files.imageCover[0].path;
         }
         if (files.images) {
             req.body.images = files.images.map((img: any) => img.path);
@@ -42,9 +23,29 @@ const addProduct = catchError(async (req: Request, res: Response, next: NextFunc
     }
     const isExist = await ProductModel.findOne({ title });
     if (isExist) return next(new AppError("المنتج موجود مسبقاً", 400));
-    const product = await ProductModel.create({...req.body});
-    res.status(201).json({ message: "success", product });
+    const newProduct = await ProductModel.create({ ...req.body });
+    res.status(201).json({ message: "success", product: newProduct });
 });
+
+// const addProduct = catchError(async (req: Request, res: Response, next: NextFunction) => {
+//     const { title } = req.body;
+//     if (title) {
+//         req.body.slug = slugify.default(title, { lower: true });
+//     }
+//     const files = req.files as any;
+//     if (files) {
+//         if (files.imageCover && files.imageCover[0]) {
+//             req.body.imageCover = files.imageCover[0].path; 
+//         }
+//         if (files.images) {
+//             req.body.images = files.images.map((img: any) => img.path);
+//         }
+//     }
+//     const isExist = await ProductModel.findOne({ title });
+//     if (isExist) return next(new AppError("المنتج موجود مسبقاً", 400));
+//     const product = await ProductModel.create({...req.body});
+//     res.status(201).json({ message: "success", product });
+// });
 
 // get all products
 const getAllProducts = catchError(async (req: Request, res: Response, next: NextFunction) => {
