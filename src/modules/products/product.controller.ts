@@ -28,36 +28,22 @@ import slugify from "slugify";
 // });
 const addProduct = catchError(async (req: Request, res: Response, next: NextFunction) => {
     const { title } = req.body;
-    
-    // 1. توليد الـ slug
     if (title) {
         req.body.slug = slugify.default(title, { lower: true });
     }
-
-    // 2. التعامل مع الملفات المرفوعة (Cloudinary تعيد الروابط في حقل path)
     const files = req.files as any;
     if (files) {
-        // الصورة الغلاف
         if (files.imageCover && files.imageCover[0]) {
-            // نستخدم path لأنه يحتوي على رابط الصورة الكامل (https://...)
             req.body.imageCover = files.imageCover[0].path; 
         }
-        
-        // مصفوفة الصور الإضافية
         if (files.images) {
-            // نستخدم map لاستخراج الروابط الكاملة لكل الصور
             req.body.images = files.images.map((img: any) => img.path);
         }
     }
-
-    // 3. التحقق من وجود المنتج
     const isExist = await ProductModel.findOne({ title });
     if (isExist) return next(new AppError("المنتج موجود مسبقاً", 400));
-
-    // 4. إنشاء المنتج بالبيانات الجديدة (التي تحتوي على روابط الصور)
-    const newProduct = await ProductModel.create(req.body);
-
-    res.status(201).json({ message: "success", product: newProduct });
+    const product = await ProductModel.create(req.body);
+    res.status(201).json({ message: "success", product });
 });
 
 // get all products
