@@ -20,10 +20,8 @@ const addproductval = joi.object({
     stock: joi.number().min(0),
     category: joi.string().hex().length(24).optional(),
     costPrice: joi.number().min(0),
-   
-    imageCover: joi.array().items(fileSchema).required(),
-
-    images: joi.array().items(fileSchema).required(),
+   imageCover: joi.string().uri().required(), 
+    images: joi.array().items(joi.string().uri()).required(),
 })
 
 export { addproductval }
