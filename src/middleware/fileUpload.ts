@@ -73,7 +73,7 @@ export const fileUpload = (folderName: string) => {
     const upload = multer({ 
         storage, 
         fileFilter,
-        limits: { fileSize: 4.5 * 1024 * 1024 } // حد أقصى 4.5MB لكل صورة لتناسب Vercel
+        limits: { fileSize: 2 * 1024 * 1024 } // حد أقصى 4.5MB لكل صورة لتناسب Vercel
     });
     
     return upload;
