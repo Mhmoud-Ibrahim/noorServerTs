@@ -42,7 +42,7 @@ const addProduct = catchError(async (req: Request, res: Response, next: NextFunc
     }
     const isExist = await ProductModel.findOne({ title });
     if (isExist) return next(new AppError("المنتج موجود مسبقاً", 400));
-    const product = await ProductModel.create(req.body);
+    const product = await ProductModel.create({...req.body});
     res.status(201).json({ message: "success", product });
 });
 
