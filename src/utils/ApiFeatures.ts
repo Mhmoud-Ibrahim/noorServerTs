@@ -8,7 +8,7 @@ export default class ApiFeatures {
     pagination() {
         let page = Number(this.queryString.page) || 1;
         if (page <= 0) page = 1;
-        const limit = Number(this.queryString.limit) || 10; // خليها مرنة
+        const limit = Number(this.queryString.limit) || 12; // خليها مرنة
         const skip = (page - 1) * limit;
         
         this.mongooseQuery.skip(skip).limit(limit);
