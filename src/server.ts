@@ -23,7 +23,7 @@ const app: Application = express();
 app.use(cors({
   origin:[
     "http://localhost:5173",
-    "http://localhost:3000",
+    "https://noor-store-five.vercel.app",
     "https://api.cloudinary.com"
   ],
 
