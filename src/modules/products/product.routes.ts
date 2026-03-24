@@ -12,7 +12,7 @@ const mixFields = [
 ];
 productRouter
 .post('/product',
-    uploadMixOfFiles(mixFields, 'products'),
+  //  uploadMixOfFiles(mixFields, 'products'),
     authenticate,
     allowedTo('admin', 'employee'),
     validation(addproductval),
