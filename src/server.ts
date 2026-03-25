@@ -17,6 +17,7 @@ import orderRouter from './modules/order/order.routes.js';
 import dashboardRouter from './modules/dashboard/dashboard.routes.js';
 import expenseRouter from './modules/expenses/expenses.routes.js';
 import dotenv from 'dotenv';
+import cartRouter from './modules/cart/cart.route.js';
 dotenv.config();
 
 const app: Application = express();
@@ -46,7 +47,7 @@ app.use('/api',categoryRouter)
 app.use('/api',orderRouter)
 app.use('/api',dashboardRouter)
 app.use('/api',expenseRouter)
-
+app.use('/api',cartRouter)
 
 
 
