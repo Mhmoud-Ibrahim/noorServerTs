@@ -19,7 +19,7 @@ const calcTotalCartPrice = (cart: ICart) => {
 // 1. إضافة منتج للسلة
 export const addToCart = catchError(async (req: Request, res: Response, next: NextFunction) => {
     const { productId } = req.body;
-    const userId = (req as any).user.userId; // استخراج الـ ID الصحيح من التوكن
+    const userId = (req as any).user.userId; 
 
     const product = await ProductModel.findById(productId);
     if (!product) return next(new AppError("Product not found", 404));
@@ -83,10 +83,8 @@ export const removeItemFromCart = catchError(async (req: Request, res: Response,
 export const updateQuantity = catchError(async (req: Request, res: Response, next: NextFunction) => {
     const { quantity } = req.body;
     const userId = (req as any).user.userId;
-
     const cart = await CartModel.findOne({ user: userId });
     if (!cart) return next(new AppError("Cart not found", 404));
-
     const item = cart.cartItems.find((item: any) => item._id?.toString() === req.params.itemId);
     if (!item) return next(new AppError("Item not found in cart", 404));
 
