@@ -59,19 +59,20 @@ const getAllUsers = catchError(async (req: Request, res: Response, next: NextFun
 // });
  const updateuser = catchError(async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
+
+    // Cloudinary يضع الرابط هنا
     if (req.file) {
         req.body.userImage = req.file.path; 
     }
-    const user = await User.findByIdAndUpdate(id, req.body, { 
-        new: true, 
-        runValidators: true 
-    });
+
+    const user = await User.findByIdAndUpdate(id, req.body, { new: true });
 
     if (!user) return next(new AppError("user not found", 404));
 
-    // 3. إرسال الرد
     res.json({ message: "success", user });
 });
+
+
 
 
 
