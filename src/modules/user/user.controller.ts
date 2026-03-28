@@ -58,26 +58,16 @@ const getAllUsers = catchError(async (req: Request, res: Response, next: NextFun
 //     res.json({ message: "success", user });
 // });
   const updateuser = catchError(async (req: Request, res: Response, next: NextFunction) => {
-    // 1. التأكد من الـ ID (يأتي من الـ Params)
     const { id } = req.params;
-
-    // 2. تحديث الحقول النصية أولاً من req.body
     const updateData = { ...req.body };
-
-    // 3. إذا نجح multer في الرفع لـ Cloudinary، أضف الرابط
     if (req.file) {
         updateData.userImage = req.file.path; 
     }
-
-    // 4. التحديث في MongoDB واسترجاع الوثيقة الجديدة { new: true }
     const user = await User.findByIdAndUpdate(id, updateData, { 
         new: true,
         runValidators: false 
     });
-
     if (!user) return next(new AppError("User not found", 404));
-
-    // 5. الرد بالبيانات المحدثة (هذا ما سيجعل الكونسول يظهر البيانات بدلاً من null)
     res.status(200).json({ message: "success", user });
 });
 
