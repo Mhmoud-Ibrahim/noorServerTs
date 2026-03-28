@@ -57,7 +57,7 @@ const getAllUsers = catchError(async (req: Request, res: Response, next: NextFun
 //     if (!user) return next(new AppError("user not found", 404));
 //     res.json({ message: "success", user });
 // });
- export const updateuser = catchError(async (req: Request, res: Response, next: NextFunction) => {
+  const updateuser = catchError(async (req: Request, res: Response, next: NextFunction) => {
     // 1. التأكد من الـ ID (يأتي من الـ Params)
     const { id } = req.params;
 
