@@ -79,19 +79,43 @@ const getAllProducts = catchError(async (req: Request, res: Response, next: Next
     res.json({ message: "success", product });
  })
 // update product
-const updateProduct = catchError(async (req: Request, res: Response, next: NextFunction) => {
+// const updateProduct = catchError(async (req: Request, res: Response, next: NextFunction) => {
+//     const { id } = req.params;
+// if (req.body && req.body.title) {
+//     req.body.slug = slugify.default(req.body.title, { lower: true, replacement: '-' });
+// }
+//     const files = req.files as any;
+//     if (files) {
+//         if (files.imageCover) req.body.imageCover = files.imageCover[0].filename;
+//         if (files.images) req.body.images = files.images.map((img: any) => img.filename);
+//     }
+//    const product = await ProductModel.findByIdAndUpdate(id, req.body, { returnDocument: 'after' });
+
+//     if (!product) return next(new AppError("product not found", 404));
+//     res.json({ message: "success", product });
+// });
+// في ملف product.controller.ts
+ const updateProduct = catchError(async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-if (req.body && req.body.title) {
-    req.body.slug = slugify.default(req.body.title, { lower: true, replacement: '-' });
-}
+
+    // 1. تحديث الـ Slug إذا تغير العنوان
+    if (req.body.title) {
+        req.body.slug = slugify.default(req.body.title, { lower: true, replacement: '-' });
+    }
+
+    // 2. التعامل مع الملفات المرفوعة (Cloudinary)
     const files = req.files as any;
     if (files) {
-        if (files.imageCover) req.body.imageCover = files.imageCover[0].filename;
-        if (files.images) req.body.images = files.images.map((img: any) => img.filename);
+        // نستخدم .path لأن Cloudinary يضع الرابط الكامل هناك
+        if (files.imageCover) req.body.imageCover = files.imageCover[0].path;
+        if (files.images) req.body.images = files.images.map((img: any) => img.path);
     }
-   const product = await ProductModel.findByIdAndUpdate(id, req.body, { returnDocument: 'after' });
+
+    // 3. التحديث في MongoDB واسترجاع المنتج الجديد { new: true }
+    const product = await ProductModel.findByIdAndUpdate(id, req.body, { new: true });
 
     if (!product) return next(new AppError("product not found", 404));
+    
     res.json({ message: "success", product });
 });
 

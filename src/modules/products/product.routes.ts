@@ -20,7 +20,7 @@ addProduct)
 .get('/product',getAllProducts)
 .get('/product/:id',getOneProduct)
 .delete('/product/:id',deleteProduct)
-.put('/product/:id',uploadMixOfFiles(mixFields, 'products'),authenticate,allowedTo('admin'),updateProduct)
+.put('/product/:id',uploadMixOfFiles(mixFields, 'products'),authenticate,allowedTo('admin','employee'),updateProduct)
 
 
 
