@@ -10,7 +10,10 @@ userRouter
 .get('/user',authenticate,allowedTo('admin'),getAllUsers)
 .get('/user/:id',authenticate,allowedTo('admin'),getOneUser)
 .delete('/user/:id',authenticate,allowedTo('admin'),deleteUser)
-.patch('/user/:id',authenticate,allowedTo('admin','employee','user'),updateuser)
+.patch('/user/:id',
+    authenticate,allowedTo('admin','employee','user'),
+ uploadSingleFile('userImage', 'users')
+ ,updateuser)
 .post('/changePassword/:id',authenticate,changePassowrd)
 
 

@@ -5,7 +5,7 @@ export interface IUser extends Document {
     name: string;
     email: string;
     password: string;
-    userImage?: string; // سيخزن رابط Cloudinary المباشر
+    userImage?: string; 
     role: string; 
 }
 
