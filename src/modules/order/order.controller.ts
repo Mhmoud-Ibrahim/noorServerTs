@@ -158,101 +158,55 @@ import { AppError } from "../../utils/appError.js";
 import ApiFeatures from '../../utils/ApiFeatures.js';
 
 // 1. تحويل السلة إلى طلب (الـ Checkout الأساسي)
-// export const createCheckoutOrder = catchError(async (req: Request, res: Response, next: NextFunction) => {
-//     const userId = (req as any).user.userId;
-//     const { paymentType } = req.body;
-
-//     // جلب سلة المستخدم
-//     const cart = await CartModel.findOne({ user: userId });
-//     if (!cart || cart.cartItems.length === 0) {
-//         return next(new AppError("السلة فارغة، أضف منتجات أولاً", 400));
-//     }
-
-//     const finalItems = [];
-//     // استخدام السعر بعد الخصم إن وجد، وإلا السعر الإجمالي
-//     const totalAmount = cart.totalPriceAfterDiscount || cart.totalCartPrice;
-
-//     for (const item of cart.cartItems) {
-//         const product = await ProductModel.findById(item.product);
-        
-//         if (!product) return next(new AppError(`المنتج غير موجود`, 404));
-
-//         if (product.stock < item.quantity) {
-//             return next(new AppError(`المنتج ${product.title} غير متوفر بالكمية المطلوبة`, 400));
-//         }
-
-//         finalItems.push({
-//             product: product._id,
-//             quantity: item.quantity,
-//             price: item.price,
-//             costPrice: product.costPrice || 0 
-//         });
-
-//         // تحديث المخزون
-//         product.stock -= item.quantity;
-//         await product.save();
-//     }
-
-//     const order = new Order({
-//         user: userId,
-//         orderItems: finalItems,
-//         totalAmount,
-//         paymentType: paymentType || 'cash'
-//     });
-
-//     await order.save();
-
-//     // تفريغ السلة بعد نجاح الطلب
-//     await CartModel.findByIdAndDelete(cart._id);
-
-//     res.status(201).json({ message: "تمت عملية الشراء بنجاح وتفريغ السلة", order });
-// });
-import Stripe from 'stripe';
-const stripe = new Stripe('your_stripe_secret_key');
-
-export const createCheckoutOrder = catchError(async (req, res, next) => {
+export const createCheckoutOrder = catchError(async (req: Request, res: Response, next: NextFunction) => {
     const userId = (req as any).user.userId;
     const { paymentType } = req.body;
-    const cart = await CartModel.findOne({ user: userId }).populate('cartItems.product');
 
-    if (!cart) return next(new AppError("السلة فارغة", 400));
-    const totalAmount = cart.totalPriceAfterDiscount || cart.totalCartPrice;
-
-    // 1. إنشاء الطلب في الداتابيز (بوضعية "انتظار الدفع")
-    const order = await Order.create({
-        user: userId,
-        orderItems: cart.cartItems,
-        totalAmount,
-        paymentType,
-        isPaid: false // لم يدفع بعد
-    });
-
-    // 2. لو الدفع بالفيزا، نجهز جلسة Stripe
-    if (paymentType === 'card') {
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card'],
-            line_items: cart.cartItems.map(item => ({
-                price_data: {
-                    currency: 'egp',
-                    product_data: { name: (item.product as any).title },
-                    unit_amount: item.price * 100, // بالسنت
-                },
-                quantity: item.quantity,
-            })),
-            mode: 'payment',
-            success_url: `${req.protocol}://${req.get('host')}/order-success/${order._id}`,
-            cancel_url: `${req.protocol}://${req.get('host')}/cart`,
-            client_reference_id: order._id.toString(),
-        });
-
-        return res.status(201).json({ message: "success", order, sessionUrl: session.url });
+    // جلب سلة المستخدم
+    const cart = await CartModel.findOne({ user: userId });
+    if (!cart || cart.cartItems.length === 0) {
+        return next(new AppError("السلة فارغة، أضف منتجات أولاً", 400));
     }
 
-    // 3. لو كاش، كمل عادي وامسح السلة
-    await CartModel.findByIdAndDelete(cart._id);
-    res.status(201).json({ message: "success", order });
-});
+    const finalItems = [];
+    // استخدام السعر بعد الخصم إن وجد، وإلا السعر الإجمالي
+    const totalAmount = cart.totalPriceAfterDiscount || cart.totalCartPrice;
 
+    for (const item of cart.cartItems) {
+        const product = await ProductModel.findById(item.product);
+        
+        if (!product) return next(new AppError(`المنتج غير موجود`, 404));
+
+        if (product.stock < item.quantity) {
+            return next(new AppError(`المنتج ${product.title} غير متوفر بالكمية المطلوبة`, 400));
+        }
+
+        finalItems.push({
+            product: product._id,
+            quantity: item.quantity,
+            price: item.price,
+            costPrice: product.costPrice || 0 
+        });
+
+        // تحديث المخزون
+        product.stock -= item.quantity;
+        await product.save();
+    }
+
+    const order = new Order({
+        user: userId,
+        orderItems: finalItems,
+        totalAmount,
+        paymentType: paymentType || 'cash'
+    });
+
+    await order.save();
+
+    // تفريغ السلة بعد نجاح الطلب
+    await CartModel.findByIdAndDelete(cart._id);
+
+    res.status(201).json({ message: "تمت عملية الشراء بنجاح وتفريغ السلة", order });
+});
 
 // 2. تسجيل عملية بيع يدوية (بدون سلة)
 export const createOrder = catchError(async (req: Request, res: Response, next: NextFunction) => {
