@@ -7,7 +7,7 @@ passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID!,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     // الرابط الذي سيعود إليه جوجل بعد نجاح الدخول
-    callbackURL: "https://noor-store-five.vercel.app" 
+    callbackURL: "https://vercel.app"  
   },
   async (accessToken: string, refreshToken: string, profile: any, done: any) => {
     try {

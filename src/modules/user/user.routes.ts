@@ -33,7 +33,7 @@ userRouter.get('/auth/google/callback',
     });
     
     // التوجيه النهائي لصفحة الهوم في الفرونت إند الخاص بك
-    res.redirect('https://vercel.app');
+   res.redirect('https://noor-store-five.vercel.app');
   }
 );
 
