@@ -18,6 +18,9 @@ import dashboardRouter from './modules/dashboard/dashboard.routes.js';
 import expenseRouter from './modules/expenses/expenses.routes.js';
 import dotenv from 'dotenv';
 import cartRouter from './modules/cart/cart.route.js';
+import passport from 'passport';
+import './modules/user/user.controller.js'; // استدعاء ملف الإعداد الذي أنشأناه
+
 dotenv.config();
 
 const app: Application = express();
@@ -49,6 +52,7 @@ app.use('/api',dashboardRouter)
 app.use('/api',expenseRouter)
 app.use('/api',cartRouter)
 
+app.use(passport.initialize());
 
 
 
