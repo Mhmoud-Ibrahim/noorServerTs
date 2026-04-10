@@ -5,37 +5,34 @@ import { addUser, changePassowrd, deleteUser, getAllUsers, getOneUser, updateuse
 import { allowedTo, authenticate } from "../../middleware/authintecate.js";
 import { uploadSingleFile } from "../../middleware/fileUpload.js";
 
+
+
 const userRouter = Router();
 
-// ======================== Google OAuth Routes ========================
+userRouter.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-// 1. بدء عملية تسجيل الدخول بجوجل
-userRouter.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-// 2. معالجة العودة من جوجل (Callback)
 userRouter.get('/auth/google/callback', 
   passport.authenticate('google', { session: false }),
   (req: any, res) => {
-    // إنشاء التوكن الخاص بنظامك
     const token = jwt.sign(
       { userId: req.user._id, email: req.user.email, role: req.user.role },
       process.env.JWT_KEY!,
       { expiresIn: '24h' }
     );
 
-    // إرسال التوكن في الكوكيز (إعدادات ضرورية للعمل على Vercel)
     res.cookie('noorToken', token, { 
         httpOnly: true, 
-        secure: true,      // يجب أن يكون true لأنك تستخدم HTTPS على Vercel
-        sameSite: 'none',  // ضروري جداً للربط بين دومين الباك والفرونت المختلفين
-        maxAge: 24 * 60 * 60 * 1000 // يوم واحد
+        secure: true,      
+        sameSite: 'none',  
+        maxAge: 24 * 60 * 60 * 1000 
     });
     
-    // التوجيه النهائي لصفحة الهوم في الفرونت إند الخاص بك
-   res.redirect('https://noor-store-five.vercel.app');
+    // التوجيه لصفحة الهوم في الفرونت إند
+    res.redirect('https://vercel.app');
   }
 );
+
+
 
 // ======================== Standard User Routes ========================
 
