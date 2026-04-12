@@ -57,11 +57,38 @@ const getMe = catchError(async (req: any, res: Response, next: NextFunction) => 
     });
 });
 
+// دالة لإنشاء التوكن ووضعه في الكوكيز (لإعادة الاستخدام)
+const sendTokenResponse = (user: any, res: Response) => {
+    const token = jwt.sign(
+        { userId: user._id, email: user.email, name: user.name, role: user.role },
+        process.env.JWT_KEY as string
+    );
+    res.cookie('noorToken', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        maxAge: 24 * 60 * 60 * 1000,
+    });
+};
+
+// دالة النجاح بعد OAuth
+const googleAuthSuccess = catchError(async (req:Request, res: Response) => {
+    if (req.user) {
+        sendTokenResponse(req.user, res);
+        // التوجيه لصفحة الهوم في الفرونت إند بعد النجاح
+        res.redirect('http://localhost:5173/home'); 
+    } else {
+        res.redirect('http://localhost:5173/login');
+    }
+});
+
+
 
 
 export {
     signup,
     signin,
     logout,
-    getMe
+    getMe,
+    googleAuthSuccess
 }
