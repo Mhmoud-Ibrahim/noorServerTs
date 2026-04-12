@@ -20,10 +20,15 @@ import dotenv from 'dotenv';
 import cartRouter from './modules/cart/cart.route.js';
 import passport from 'passport';
 import './modules/user/user.controller.js'; // استدعاء ملف الإعداد الذي أنشأناه
+ // تأكد من المسار الصحيح لملف الباسبورت الذي أنشأناه
+
 
 dotenv.config();
 
 const app: Application = express();
+
+// ... بعد تعريف الـ app
+app.use(passport.initialize());
 app.use(cors({
   origin:[
     "http://localhost:5173",
