@@ -4,8 +4,8 @@ import type { Profile } from 'passport-google-oauth20';
 import { User } from '../../../database/models/user.model.js';
 
 passport.use(new GoogleStrategy({
-    clientID: process.env.clientID ||`931715625275-o14pk0psgt990b4bm0mf0ktktpu6i6om.apps.googleusercontent.com`!,
-    clientSecret: process.env.clientSecret||`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`!,
+    clientID: process.env.clientID!,
+    clientSecret: process.env.clientSecret!,
     // تأكد أن هذا الرابط مطابق لما هو مسجل في Google Console
     callbackURL: "https://noor-server-ts.vercel.app/auth/google" 
   },
