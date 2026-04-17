@@ -136,7 +136,7 @@ import { Strategy as GoogleStrategy, type Profile, type VerifyCallback } from 'p
 passport.use(new GoogleStrategy({
     clientID: process.env.clientID!,
     clientSecret: process.env.clientSecret!,
-    callbackURL: "https://noor-server-ts.vercel.app/auth/google/callback" 
+    callbackURL: process.env.callbackURL!,
   },
   async (_accessToken: string, _refreshToken: string, profile: Profile, done: VerifyCallback) => {
     try {
