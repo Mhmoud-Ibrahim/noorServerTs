@@ -13,18 +13,16 @@ import { Strategy as GoogleStrategy, type Profile, type VerifyCallback } from 'p
 passport.use('google', new GoogleStrategy({
     clientID: process.env.clientID!,
     clientSecret: process.env.clientSecret!,
-    callbackURL: "https://vercel.app" 
+    callbackURL: "http://localhost:5173" 
   },
   async (_accessToken: string, _refreshToken: string, profile: Profile, done: VerifyCallback) => {
     try {
-        // حل مشكلة الـ Type: نتأكد أننا حصلنا على نص (String) وليس null
         const userEmail = profile.emails && profile.emails[0] ? profile.emails[0].value : null;
 
         if (!userEmail) {
             return done(new AppError("No email found from Google profile", 400), undefined);
         }
 
-        // الآن TypeScript متأكد أن userEmail هو string
         let user = await User.findOne({ email: userEmail });
 
         if (!user) {
