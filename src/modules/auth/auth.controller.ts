@@ -8,6 +8,7 @@ import type { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 import { Strategy as GoogleStrategy, type Profile, type VerifyCallback } from 'passport-google-oauth20';
 import crypto from 'crypto'; 
+import { sendEmail } from '../../utils/sendEmail.js';
 
 // --- 1. تعريف إستراتيجية جوجل (Google Strategy) ---
 passport.use(new GoogleStrategy({
@@ -115,13 +116,16 @@ export const googleAuthSuccess = catchError(async (req: Request, res: Response) 
 
 
 // 1. نسيت كلمة السر
+// 1. نسيت كلمة السر
 export const forgotPassword = catchError(async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body;
     
+    // 1) توليد التوكن
     const resetToken = crypto.randomBytes(32).toString('hex');
     const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
     const expires = new Date(Date.now() + 10 * 60 * 1000);
 
+    // 2) تحديث المستخدم بالتوكن
     const user = await User.findOneAndUpdate(
         { email },
         { 
@@ -133,12 +137,35 @@ export const forgotPassword = catchError(async (req: Request, res: Response, nex
 
     if (!user) return next(new AppError('لا يوجد مستخدم بهذا الإيميل', 404));
 
-    res.status(200).json({ 
-        status: "success", 
-        message: "Token sent to email!", 
-        resetToken 
-    });
+    // 3) محاولة إرسال الإيميل
+    const message = `نسيت كلمة السر؟ استخدم هذا الرمز لإعادة تعيينها: ${resetToken}`;
+
+    try {
+        await sendEmail({
+            email: user.email,
+            subject: 'إعادة تعيين كلمة المرور (صالح لمدة 10 دقائق)',
+            message,
+        });
+
+        // 4) الـ Response يتبعت فقط لو الإيميل تم إرساله بنجاح
+        res.status(200).json({ 
+            status: "success", 
+            message: "Token sent to email!", 
+            resetToken 
+        });
+
+    } catch (err) {
+        // في حالة فشل الإرسال، نمسح التوكنات اللي سجلناها في الداتابيز
+        await User.findOneAndUpdate(
+            { email },
+            { 
+                $unset: { passwordResetToken: 1, passwordResetExpires: 1 } 
+            }
+        );
+        return next(new AppError('فشل في إرسال الإيميل، حاول لاحقاً', 500));
+    }
 });
+
 
 // 2. إعادة التعيين
 export const resetPassword = catchError(async (req: Request, res: Response, next: NextFunction) => {
