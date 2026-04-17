@@ -30,6 +30,10 @@
 // );
 
 // export default authRouter;
+
+ import { getMe, logout, signin, signup } from "./auth.controller.js";
+ import { authenticate } from "../../middleware/authintecate.js";
+
 import { Router } from 'express';
 import passport from 'passport';
 import * as authController from './auth.controller.js';
@@ -44,9 +48,9 @@ authRouter.get('/google/callback',
     authController.googleAuthSuccess
 );
 
-// المسارات العادية
-authRouter.post('/signup', authController.signup);
-authRouter.post('/signin', authController.signin);
-authRouter.get('/logout', authController.logout);
+authRouter.post('/signup', signup);
+authRouter.post('/signin', signin);
+authRouter.post('/logout', logout);
+authRouter.get('/me', authenticate, getMe);
 
 export default authRouter;
