@@ -84,7 +84,7 @@ const googleAuthSuccess = catchError(async (req: Request, res: Response) => {
     if (req.user) {
         sendTokenResponse(req.user, res);
         // التوجيه لصفحة الهوم في الفرونت إند
-        res.redirect('noor-store-five.vercel.app'); 
+        res.redirect('https://noor-store-five.vercel.app'); 
     } else {
         // في حال الفشل نرجعه لصفحة اللوجن
         res.redirect('noor-store-five.vercel.app');
