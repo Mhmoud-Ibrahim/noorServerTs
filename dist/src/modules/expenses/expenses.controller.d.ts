@@ -1,3 +1,0 @@
-export declare const addExpense: import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>;
-export declare const getAllExpenses: import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>;
-//# sourceMappingURL=expenses.controller.d.ts.map
