@@ -8,8 +8,6 @@ import type { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 import { Strategy as GoogleStrategy, type Profile, type VerifyCallback } from 'passport-google-oauth20';
 
-// 1. إعداد Passport Strategy
-// تم التأكد من اسم الاستراتيجية وتطابق الـ Callback URL مع إعدادات جوجل
 passport.use(new GoogleStrategy({
     clientID: process.env.clientID!,
     clientSecret: process.env.clientSecret!,
