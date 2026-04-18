@@ -47,16 +47,35 @@ const getAllUsers = catchError(async (req: Request, res: Response, next: NextFun
     res.json({ message: "success", user });
  })
 
-  const updateuser = catchError(async (req: Request, res: Response, next: NextFunction) => {
+//   const updateuser = catchError(async (req: Request, res: Response, next: NextFunction) => {
+//     const { id } = req.params;
+//     const updateData = { ...req.body };
+//     if (req.file) {
+//         updateData.userImage = req.file.path; 
+//     }
+//     const user = await User.findByIdAndUpdate(id, updateData, { 
+//         new: true,
+//         runValidators: false 
+//     });
+//     if (!user) return next(new AppError("User not found", 404));
+//     res.status(200).json({ message: "success", user });
+// });
+
+const updateuser = catchError(async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const updateData = { ...req.body };
+    
+    let updateData = { ...req.body };
+
     if (req.file) {
-        updateData.userImage = req.file.path; 
+
+        updateData.userImage = (req.file as any).path || (req.file as any).secure_url;
     }
+
     const user = await User.findByIdAndUpdate(id, updateData, { 
         new: true,
         runValidators: false 
     });
+
     if (!user) return next(new AppError("User not found", 404));
     res.status(200).json({ message: "success", user });
 });
