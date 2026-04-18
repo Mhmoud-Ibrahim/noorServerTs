@@ -115,59 +115,45 @@ export const googleAuthSuccess = catchError(async (req: Request, res: Response) 
 
 
 
-// 1. نسيت كلمة السر
-// 1. نسيت كلمة السر
+
+
+
+// 2. إعادة التعيين
+
+// 1. في forgotPassword
 export const forgotPassword = catchError(async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body;
-    
-    // 1) توليد التوكن
-    const resetToken = crypto.randomBytes(32).toString('hex');
-    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-    const expires = new Date(Date.now() + 10 * 60 * 1000);
 
-    // 2) تحديث المستخدم بالتوكن
+    // توليد OTP مكون من 6 أرقام
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // تشفيره قبل الحفظ في الداتابيز للأمان
+    const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
+    const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 دقائق
+
     const user = await User.findOneAndUpdate(
         { email },
-        { 
-            passwordResetToken: hashedToken, 
-            passwordResetExpires: expires 
-        },
+        { passwordResetToken: hashedOtp, passwordResetExpires: expires },
         { new: true }
     );
 
     if (!user) return next(new AppError('لا يوجد مستخدم بهذا الإيميل', 404));
 
-    // 3) محاولة إرسال الإيميل
-    const message = `نسيت كلمة السر؟ استخدم هذا الرمز لإعادة تعيينها: ${resetToken}`;
-
     try {
         await sendEmail({
             email: user.email,
-            subject: 'إعادة تعيين كلمة المرور (صالح لمدة 10 دقائق)',
-            message,
+            subject: 'رمز التحقق الخاص بك (OTP)',
+            message: `رمز إعادة تعيين كلمة المرور الخاص بك هو: ${otp}. صالح لمدة 10 دقائق.`,
         });
 
-        // 4) الـ Response يتبعت فقط لو الإيميل تم إرساله بنجاح
-        res.status(200).json({ 
-            status: "success", 
-            message: "Token sent to email!", 
-            resetToken 
-        });
-
+        res.status(200).json({ status: "success", message: "OTP sent to email!" });
     } catch (err) {
-        // في حالة فشل الإرسال، نمسح التوكنات اللي سجلناها في الداتابيز
-        await User.findOneAndUpdate(
-            { email },
-            { 
-                $unset: { passwordResetToken: 1, passwordResetExpires: 1 } 
-            }
-        );
-        return next(new AppError('فشل في إرسال الإيميل، حاول لاحقاً', 500));
+        await User.findOneAndUpdate({ email }, { $unset: { passwordResetToken: 1, passwordResetExpires: 1 } });
+        return next(new AppError('فشل في إرسال الإيميل', 500));
     }
 });
 
 
-// 2. إعادة التعيين
 export const resetPassword = catchError(async (req: Request, res: Response, next: NextFunction) => {
     const { token } = req.params;
     const { password } = req.body;
@@ -194,6 +180,5 @@ export const resetPassword = catchError(async (req: Request, res: Response, next
     if (!user) return next(new AppError('التوكن غير صالح أو انتهت صلاحيته', 400));
 
     sendTokenResponse(user, res);
-    res.status(200).json({ message: "success" });
+    // res.status(200).json({ message: "success" });
 });
-
