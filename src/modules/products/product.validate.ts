@@ -1,7 +1,5 @@
 import joi from 'joi'
 
-// تعريف قاعدة بيانات الملف (لتجنب التكرار)
-// استخدم .unknown(true) عشان يتجاهل أي خصائص ناقصة زي destination
 const fileSchema = joi.object({
     fieldname: joi.string().required(),
     originalname: joi.string().required(),
@@ -10,12 +8,12 @@ const fileSchema = joi.object({
     size: joi.number().max(5242880).required(),
     filename: joi.string().optional(), // خليها optional
     path: joi.string().optional(),     // خليها optional
-}).unknown(true); // السطر ده هو "السحر" اللي هيخلي الجوي ميعترضش على الخصائص الناقصة
+}).unknown(true);
 
 
 const addproductval = joi.object({
-    title: joi.string().min(2).max(300).required().trim(),
-    description: joi.string().min(3).max(1500).required().trim(),
+    title: joi.string().min(1).max(300).required().trim(),
+    description: joi.string().min(1).max(1500).required().trim(),
     price: joi.number().min(0).required(),
     stock: joi.number().min(0),
     category: joi.string().hex().length(24).optional(),
