@@ -132,7 +132,8 @@ export const forgotPassword = catchError(async (req: Request, res: Response, nex
 
     try {
         await sendEmail({
-            email: user.email,
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
             subject: 'رمز التحقق الخاص بك (OTP)',
             message: `رمز إعادة تعيين كلمة المرور الخاص بك هو: ${otp}. صالح لمدة 10 دقائق.`,
         });
@@ -147,19 +148,16 @@ export const forgotPassword = catchError(async (req: Request, res: Response, nex
 
 
 export const resetPassword = catchError(async (req: Request, res: Response, next: NextFunction) => {
-    const { otp, password } = req.body; // بنستقبل الـ otp من الـ body
+    const { otp, password } = req.body; 
 
     if (!otp || !password) {
         return next(new AppError('برجاء إدخال الرمز وكلمة المرور الجديدة', 400));
     }
 
-    // 1. تشفير الـ OTP المدخل لمقارنته بالموجود في القاعدة
     const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
 
-    // 2. تشفير الباسورد الجديد يدوياً
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 3. البحث عن المستخدم وتحديثه (بشرط الـ OTP والوقت)
     const user = await User.findOneAndUpdate(
         { 
             passwordResetToken: hashedOtp,
