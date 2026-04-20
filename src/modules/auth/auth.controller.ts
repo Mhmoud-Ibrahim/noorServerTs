@@ -114,20 +114,11 @@ export const googleAuthSuccess = catchError(async (req: Request, res: Response) 
 
 
 
-
-
-
-
-// 2. إعادة التعيين
-
-// 1. في forgotPassword
 export const forgotPassword = catchError(async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body;
 
-    // توليد OTP مكون من 6 أرقام
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     
-    // تشفيره قبل الحفظ في الداتابيز للأمان
     const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
     const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 دقائق
 
@@ -154,31 +145,36 @@ export const forgotPassword = catchError(async (req: Request, res: Response, nex
 });
 
 
+
 export const resetPassword = catchError(async (req: Request, res: Response, next: NextFunction) => {
-    const { token } = req.params;
-    const { password } = req.body;
+    const { otp, password } = req.body; // بنستقبل الـ otp من الـ body
 
-    if (!token) return next(new AppError('التوكن مطلوب', 400));
+    if (!otp || !password) {
+        return next(new AppError('برجاء إدخال الرمز وكلمة المرور الجديدة', 400));
+    }
 
-    const hashedToken = crypto.createHash('sha256').update(token as string).digest('hex');
+    // 1. تشفير الـ OTP المدخل لمقارنته بالموجود في القاعدة
+    const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
 
-    // تشفير الباسورد يدوياً هنا لأننا لن نستخدم .save()
+    // 2. تشفير الباسورد الجديد يدوياً
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // 3. البحث عن المستخدم وتحديثه (بشرط الـ OTP والوقت)
     const user = await User.findOneAndUpdate(
         { 
-            passwordResetToken: hashedToken,
-            passwordResetExpires: { $gt: new Date() }
+            passwordResetToken: hashedOtp,
+            passwordResetExpires: { $gt: new Date() } // التأكد من الصلاحية
         },
         {
             password: hashedPassword,
-            $unset: { passwordResetToken: 1, passwordResetExpires: 1 } // مسح التوكنات
+            $unset: { passwordResetToken: 1, passwordResetExpires: 1 } // مسح بيانات التحقق بعد النجاح
         },
         { new: true }
     );
 
-    if (!user) return next(new AppError('التوكن غير صالح أو انتهت صلاحيته', 400));
+    if (!user) {
+        return next(new AppError('الرمز غير صحيح أو انتهت صلاحيته', 400));
+    }
 
     sendTokenResponse(user, res);
-    // res.status(200).json({ message: "success" });
 });

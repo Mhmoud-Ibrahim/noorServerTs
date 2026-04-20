@@ -17,7 +17,7 @@ authRouter.post('/logout', logout);
 authRouter.get('/me', authenticate, getMe);
 // --- Forgot & Reset Password Routes ---
 authRouter.post('/forgotPassword', authController.forgotPassword); // لإرسال الإيميل
-authRouter.patch('/resetPassword/:token', authController.resetPassword); // لتغيير الباسورد الفعلي
+authRouter.patch('/resetPassword', authController.resetPassword); // لتغيير الباسورد الفعلي
 
 
 export default authRouter;
