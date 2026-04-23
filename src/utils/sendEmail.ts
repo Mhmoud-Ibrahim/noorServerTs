@@ -14,15 +14,19 @@ const transporter = nodemailer.createTransport({
         rejectUnauthorized: false
     }
 });
-const mailOptions = await transporter.sendMail({
+
+
+// كود صحيح
+const messageConfig = {
    from: `Noor Store <${process.env.EMAIL_USER}>`,
-    to: options.email,
-    subject: options.subject,
-    // text: options.message,
-    html:emailTemlate()
-})
+   to: options.email,
+   subject: options.subject,
+   html: emailTemlate(options.message)
+};
+
+const info = await transporter.sendMail(messageConfig);
+return info;
 
  
 
-  await transporter.sendMail(mailOptions);
 };
