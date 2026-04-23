@@ -84,7 +84,7 @@ const signin = catchError(async (req: Request, res: Response, next: NextFunction
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (isPasswordCorrect) {
         sendTokenResponse(user, res);
-        return res.status(200).json({ message: "success" });
+        return res.json({ message: "success" });
     }
     return next(new AppError('incorrect email or password ', 401))
 });

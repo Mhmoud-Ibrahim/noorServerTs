@@ -8,6 +8,8 @@ export interface IUser extends Document {
     userImage?: string; 
     role: string; 
     googleId?: string;
+    otpCode:string,
+    otpExpire:Date,
     passwordResetToken?: string;
     passwordResetExpires?: Date;
 }
@@ -19,6 +21,8 @@ const UserSchema = new Schema<IUser>({
     password: { type: String, required: true }, // سيتم تخزينها مشفرة جاهزة
     userImage: { type: String },
     googleId: { type: String, required: false },
+    otpCode:{type:String},
+    otpExpire:Date,
     role: { 
         type: String, 
         enum: ['user', 'admin', 'employee'],

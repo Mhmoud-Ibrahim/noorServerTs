@@ -189,8 +189,8 @@ import { sendEmail } from '../../utils/sendEmail.js';
 
 // --- 1. تعريف إستراتيجية جوجل (Google Strategy) ---
 passport.use(new GoogleStrategy({
-    clientID: process.env.clientID!,
-    clientSecret: process.env.clientSecret!,
+    clientID: process.env.clientID!||'',
+    clientSecret: process.env.clientSecret!||'',
     callbackURL: "https://noor-server-ts.vercel.app/auth/google/callback",
   },
   async (_accessToken: string, _refreshToken: string, profile: Profile, done: VerifyCallback) => {
@@ -295,10 +295,8 @@ export const forgotPassword = catchError(async (req: Request, res: Response, nex
     const { email } = req.body;
     if (!email) return next(new AppError('برجاء إدخال البريد الإلكتروني', 400));
 
-    // إنشاء OTP عشوائي من 6 أرقام
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     
-    // تشفير الـ OTP لحفظه في الداتابيز
     const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
     const expires = new Date(Date.now() + 10 * 60 * 1000); // صالح لمدة 10 دقائق
 

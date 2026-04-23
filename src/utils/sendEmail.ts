@@ -2,9 +2,8 @@ import nodemailer from 'nodemailer';
 
 export const sendEmail = async (options: any) => {
 const transporter = nodemailer.createTransport({
-    host: "://gmail.com",
-    port: 465,
-    secure: true, // استخدام منفذ محمي 465
+    service:"gmail",
+
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
@@ -14,14 +13,14 @@ const transporter = nodemailer.createTransport({
         rejectUnauthorized: false
     }
 });
-
-
-  const mailOptions = {
-    from: `Noor Store <${process.env.EMAIL_USER}>`,
+const mailOptions = await transporter.sendMail({
+   from: `Noor Store <${process.env.EMAIL_USER}>`,
     to: options.email,
     subject: options.subject,
     text: options.message,
-  };
+})
+
+ 
 
   await transporter.sendMail(mailOptions);
 };
