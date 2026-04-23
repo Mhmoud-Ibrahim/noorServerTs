@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
-import { emailTemlate } from './emailtemplate.js';
+import { emailTemplate } from './emailtemplate.js';
+
 
 export const sendEmail = async (options: any) => {
 const transporter = nodemailer.createTransport({
@@ -21,7 +22,7 @@ const messageConfig = {
    from: `Noor Store <${process.env.EMAIL_USER}>`,
    to: options.email,
    subject: options.subject,
-   html: emailTemlate(options.message)
+   html: emailTemplate(options.message)
 };
 
 const info = await transporter.sendMail(messageConfig);
