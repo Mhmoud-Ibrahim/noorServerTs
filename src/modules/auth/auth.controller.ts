@@ -8,10 +8,10 @@ import type { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 import { Strategy as GoogleStrategy, type Profile, type VerifyCallback } from 'passport-google-oauth20';
 import crypto from 'crypto'; 
-import { sendTheEmail } from '../../utils/sendEmail.js';
 
 import dotenv from 'dotenv';
 import path from 'path';
+import { sendEmail } from '../../utils/sendEmail.js';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
@@ -136,7 +136,7 @@ export const forgotPassword = catchError(async (req: Request, res: Response, nex
     if (!user) return next(new AppError('لا يوجد مستخدم بهذا الإيميل', 404));
 
     try {
-        await sendTheEmail({
+        await sendEmail({
             email: user.email,
             subject: 'رمز التحقق الخاص بك (OTP)',
             message: `رمز إعادة تعيين كلمة المرور الخاص بك هو: ${otp}. صالح لمدة 10 دقائق.`,
