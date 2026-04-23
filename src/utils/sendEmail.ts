@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { emailTemplate } from './emailtemplate.js';
+import { emailTemplate } from './emailTemplate.js';
 
 
 export const sendEmail = async (options: any) => {
