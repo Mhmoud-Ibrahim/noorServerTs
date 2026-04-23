@@ -8,10 +8,10 @@ import type { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 import { Strategy as GoogleStrategy, type Profile, type VerifyCallback } from 'passport-google-oauth20';
 import crypto from 'crypto'; 
+import { sendTheEmail } from '../../utils/sendEmail.js';
 
 import dotenv from 'dotenv';
 import path from 'path';
-import { sendTheEmail } from '../../utils/sendEmail.js';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
@@ -142,7 +142,7 @@ export const forgotPassword = catchError(async (req: Request, res: Response, nex
             message: `رمز إعادة تعيين كلمة المرور الخاص بك هو: ${otp}. صالح لمدة 10 دقائق.`,
         });
 
-        res.status(200).json({ status: "success", message: "OTP sent to email!" });
+        res.json({ status: "success", message: "OTP sent to email!" });
     } catch (err) {
         // في حالة فشل الإرسال، نمسح التوكنات عشان متبقاش متعلقة في الداتابيز
         await User.findOneAndUpdate({ email }, { $unset: { passwordResetToken: 1, passwordResetExpires: 1 } });
@@ -183,5 +183,5 @@ export const resetPassword = catchError(async (req: Request, res: Response, next
 
     // إرسال توكن جديد بعد نجاح التغيير عشان المستخدم يسجل دخول تلقائي
     sendTokenResponse(user, res);
-    res.status(200).json({ status: "success", message: "success" });
+    res.json({ status: "success", message: "success" });
 });
