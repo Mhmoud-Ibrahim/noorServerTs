@@ -186,7 +186,11 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy, type Profile, type VerifyCallback } from 'passport-google-oauth20';
 import crypto from 'crypto'; 
 import { sendEmail } from '../../utils/sendEmail.js';
+import dotenv from 'dotenv';
+import path from 'path';
 
+// نحدد المسار الكامل لملف الـ .env لضمان قراءته
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 // --- 1. تعريف إستراتيجية جوجل (Google Strategy) ---
 passport.use(new GoogleStrategy({
     clientID: process.env.clientID as string,
