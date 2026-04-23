@@ -9,8 +9,8 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy, type Profile, type VerifyCallback } from 'passport-google-oauth20';
 
 passport.use(new GoogleStrategy({
-      clientID: process.env.GOOGLE_CLIENT_ID as string,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    clientID: process.env.clientID as string,
+    clientSecret: process.env.clientSecret as string,
     callbackURL: "https://noor-server-ts.vercel.app/auth/google/callback",
   },
   async (_accessToken: string, _refreshToken: string, profile: Profile, done: VerifyCallback) => {
