@@ -1,4 +1,4 @@
-export const emailTemplate = (message:any)=>{
+export const htmlEmail = (message:any)=>{
     return`
     <!doctype html>
 <html lang="en">

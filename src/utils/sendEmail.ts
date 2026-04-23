@@ -1,13 +1,12 @@
 import nodemailer from 'nodemailer';
-import { emailTemplate } from './emailTemplate.js';
-
+import { htmlEmail } from './htmlEmail.js';
 
 export const sendTheEmail = async (options: any) => {
 const transporter = nodemailer.createTransport({
     service:"gmail",
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: process.env.EMAIL_USER as any,
+      pass: process.env.EMAIL_PASS as any,
     },
    
     tls: {
@@ -21,7 +20,7 @@ const messageConfig = {
    from: `Noor Store <${process.env.EMAIL_USER}>`,
    to: options.email,
    subject: options.subject,
-   html: emailTemplate(options.message)
+   html: htmlEmail(options.message)
 };
 
 const info = await transporter.sendMail(messageConfig);
