@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { htmlEmail } from './htmlEmail.js';
+//import { htmlEmail } from './htmlEmail.js';
 
 export const sendEmail = async (options: any) => {
 const transporter = nodemailer.createTransport({
@@ -21,7 +21,8 @@ const messageConfig = {
    from: `Noor Store <${process.env.EMAIL_USER}>`,
    to: options.email,
    subject: options.subject,
-   html: htmlEmail(options.message)
+   text:options.message
+  // html: htmlEmail(options.message)
 };
 
 const info = await transporter.sendMail(messageConfig);
