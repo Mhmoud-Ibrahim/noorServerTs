@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import 'dotenv/config'; // تأكد من استيرادها هنا
 
-const MONGODB_URI = process.env.URI;
+const MONGODB_URI = process.env.OLD||process.env.URI;
 
 export const dbConnections = async () => {
     if (!MONGODB_URI) {
