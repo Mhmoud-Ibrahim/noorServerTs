@@ -27,9 +27,7 @@ passport.use(new GoogleStrategy({
         if (!userEmail) {
             return done(null, false);
         }
-
         let user = await User.findOne({ email: userEmail });
-
         if (!user) {
              user = await User.create({
                 name: profile.displayName,
