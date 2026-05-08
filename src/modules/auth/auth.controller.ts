@@ -31,15 +31,18 @@ passport.use(new GoogleStrategy({
         let user = await User.findOne({ email: userEmail });
 
         if (!user) {
-            user = await User.create({
+             user = await User.create({
                 name: profile.displayName,
                 email: userEmail,
-                password: Math.random().toString(36).slice(-10), // كلمة سر عشوائية
-                userImage: profile.photos && profile.photos[0] ? profile.photos[0].value : '',
+                password: Math.random().toString(36).slice(-10), 
+                userImage: (profile.photos && profile.photos[0]) ? profile.photos[0].value : '',
                 googleId: profile.id,
                 role: 'user'
             });
-        } else if (!user.googleId) {
+        } else if (profile.photos && profile.photos[0]) {
+                user.userImage = profile.photos[0].value;
+            }
+        else if (!user.googleId) {
             user.googleId = profile.id;
             await user.save();
         }
@@ -53,7 +56,7 @@ passport.use(new GoogleStrategy({
 // --- 2. الدوال المساعدة ---
 const sendTokenResponse = (user: any, res: Response) => {
     const token = jwt.sign(
-        { userId: user._id, email: user.email, name: user.name, role: user.role },
+        { userId: user._id, email: user.email, name: user.name, role: user.role,userImage: user.userImage },
         process.env.JWT_KEY as string,
         { expiresIn: '24h' }
     );
