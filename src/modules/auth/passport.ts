@@ -46,7 +46,6 @@ passport.use(new GoogleStrategy({
   }
 ));
 
-// 2. دالة إرسال التوكن الموحدة (JWT + Cookie)
 const sendTokenResponse = (user: any, res: Response) => {
     const token = jwt.sign(
         { userId: user._id, email: user.email, name: user.name, role: user.role },
