@@ -24,6 +24,7 @@ import orderRouter from './modules/order/order.routes.js';
 import dashboardRouter from './modules/dashboard/dashboard.routes.js';
 import expenseRouter from './modules/expenses/expenses.routes.js';
 import cartRouter from './modules/cart/cart.route.js';
+import transactionRouter from './modules/transactions/transaction.routes.js';
 
 const app: Application = express();
 
@@ -60,6 +61,7 @@ app.use('/api', categoryRouter);
 app.use('/api', orderRouter);
 app.use('/api', dashboardRouter);
 app.use('/api', expenseRouter);
+app.use('/api', transactionRouter);
 app.use('/api', cartRouter);
 
 // المسار الأساسي للتأكد من عمل السيرفر
