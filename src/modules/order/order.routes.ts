@@ -4,12 +4,10 @@ import { allowedTo, authenticate } from "../../middleware/authintecate.js";
 
 const orderRouter = Router();
 
-// تسجيل عملية بيع جديدة (للموظف والآدمن)
-orderRouter.post('/orders', authenticate, allowedTo('admin', 'employee'), createOrder);
-// جلب تقرير المبيعات اليومي (للآدمن فقط أو الموظف المسؤول)
+// استخدام مسارات واضحة لمنع التداخل والتعارض مع الموديلات الأخرى
+orderRouter.post('/', authenticate, allowedTo('admin', 'employee'), createOrder);
 orderRouter.get('/daily-report', authenticate, allowedTo('admin'), getDailyReport);
-// يفضل استخدام PATCH لأننا نعدل حالة الطلب فقط
 orderRouter.patch('/cancel/:id', authenticate, allowedTo('admin'), cancelOrder);
-orderRouter.get('/getAllOrders', authenticate, allowedTo('admin'), getAllOrders);
+orderRouter.get('/all', authenticate, allowedTo('admin'), getAllOrders);
 
 export default orderRouter;
